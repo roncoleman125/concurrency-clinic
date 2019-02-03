@@ -12,8 +12,9 @@ import java.util.logging.Logger;
  * @author Ron Coleman
  */
 public class MySyncThread1 implements Runnable {
-    protected final static long MEAN_DELAY = 500;
-    protected final static long POLL_DUTY_CYCLE_TIME = 1000;
+    public final static int MAX_DELAY = 1000;
+    public final static long POLL_DUTY_CYCLE_TIME = 1000;
+    
     protected final List<Good> queue;
     
     public static void main(String[] args) {
@@ -33,17 +34,19 @@ public class MySyncThread1 implements Runnable {
         consume();
     }
 
-    
     public void produce() {
         Random ran = new Random();
         for(int i=0; i < 10; i++) {
-            long delay = Math.abs(ran.nextLong()) % (MEAN_DELAY * 2L);
+            long delay = ran.nextInt(MAX_DELAY);
+            
             try {
                 Thread.sleep(delay);
             } catch (InterruptedException ex) {
                 System.err.println(ex);
             }
+            
             Good good = new Good();
+            
             synchronized(queue) {
                 queue.add(good);
             }

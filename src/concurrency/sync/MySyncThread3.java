@@ -11,8 +11,10 @@ import java.util.Random;
  * @author Ron Coleman
  */
 public class MySyncThread3 implements Runnable {
-    protected final static long MEAN_DELAY = 500;
-    protected final List<Good> queue;
+    public final static int MAX_DELAY = 1000;
+    public final static int TIMEOUT = 5000;
+    
+    public final List<Good> queue;
     
     public static void main(String[] args) {
         MySyncThread3 myThread = new MySyncThread3();
@@ -34,7 +36,7 @@ public class MySyncThread3 implements Runnable {
     public void produce() {
         Random ran = new Random();
         for(int i=0; i < 10; i++) {
-            long delay = Math.abs(ran.nextLong()) % (MEAN_DELAY * 2L);
+            long delay = ran.nextInt(MAX_DELAY);
             try {
                 Thread.sleep(delay);
             } catch (InterruptedException ex) {
@@ -68,7 +70,7 @@ public class MySyncThread3 implements Runnable {
     public synchronized Good remove() {
         try {
             if(queue.isEmpty())
-                wait(5000);
+                wait(TIMEOUT);
             
             Good good = queue.remove(0);
             
